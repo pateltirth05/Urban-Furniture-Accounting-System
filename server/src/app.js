@@ -10,6 +10,7 @@ import purchaseOrderRoutes from "./routes/purchaseOrderRoutes.js";
 import vendorBillRoutes from "./routes/vendorBillRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import analyticAccountRoutes from "./routes/analyticAccountRoutes.js";
+import salesOrderRoutes from "./routes/salesOrderRoutes.js";
 const app=express();
 
 app.use(express.json())
@@ -24,6 +25,7 @@ app.use("/api/purchase-orders", purchaseOrderRoutes);
 app.use("/api/vendor-bills", vendorBillRoutes);
 app.use("/api/payments",paymentRoutes)
 app.use("/api/analytic-accounts", analyticAccountRoutes);
+app.use("/api/sales-orders", salesOrderRoutes);
 app.get("/health",(req,res)=>{
     res.json({
         message:"Urban Furniture Accounting API health test"
