@@ -1,56 +1,51 @@
 import express from "express";
 
 import {
-  createContact,
-  getContacts,
-  getContactById,
-  updateContact,
-  archiveContact,
-} from "../controllers/contactController.js";
+  createCategory,
+  getCategories,
+  getCategoryById,
+  updateCategory,
+  deleteCategory,
+} from "../controllers/productCategoryController.js";
 
 import authMiddleware from "../middleware/authMiddleware.js";
 import roleMiddleware from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
-// CREATE
 router.post(
   "/",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  createContact
+  createCategory
 );
 
-// GET ALL
 router.get(
   "/",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  getContacts
+  getCategories
 );
 
-// GET ONE
 router.get(
   "/:id",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  getContactById
+  getCategoryById
 );
 
-// UPDATE
 router.put(
   "/:id",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  updateContact
+  updateCategory
 );
 
-// ARCHIVE
 router.delete(
   "/:id",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  archiveContact
+  deleteCategory
 );
 
 export default router;

@@ -1,56 +1,51 @@
 import express from "express";
 
 import {
-  createContact,
-  getContacts,
-  getContactById,
-  updateContact,
-  archiveContact,
-} from "../controllers/contactController.js";
+  createProduct,
+  getProducts,
+  getProductById,
+  updateProduct,
+  archiveProduct,
+} from "../controllers/productController.js";
 
 import authMiddleware from "../middleware/authMiddleware.js";
 import roleMiddleware from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
-// CREATE
 router.post(
   "/",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  createContact
+  createProduct
 );
 
-// GET ALL
 router.get(
   "/",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  getContacts
+  getProducts
 );
 
-// GET ONE
 router.get(
   "/:id",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  getContactById
+  getProductById
 );
 
-// UPDATE
 router.put(
   "/:id",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  updateContact
+  updateProduct
 );
 
-// ARCHIVE
 router.delete(
   "/:id",
   authMiddleware,
   roleMiddleware("ADMIN", "ACCOUNTANT"),
-  archiveContact
+  archiveProduct
 );
 
 export default router;
