@@ -1,0 +1,581 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+
+import BackgroundImage from '/Background.jpg';
+
+import {
+  Armchair,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  BarChart3,
+  Users,
+  Package,
+  Crown,
+  UserRound,
+  BriefcaseBusiness,
+  Sun,
+  Moon,
+} from 'lucide-react';
+
+export default function Login() {
+  const [email, setEmail] = useState('admin@urbanfurniture.com');
+  const [password, setPassword] = useState('admin123');
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
+  const { login } = useAuth();
+  const { showToast } = useToast();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await login(email, password);
+      showToast('Logged in successfully!', 'success');
+      navigate('/dashboard');
+    } catch (err) {
+      showToast(
+        err.message || 'Login failed. Please check your credentials.',
+        'error'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fillDemo = (demoEmail, demoPassword) => {
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+  };
+
+  return (
+    <div
+      className={`h-screen overflow-hidden relative transition-colors duration-500 ${
+        darkMode
+          ? 'bg-[#08080f] text-white'
+          : 'bg-[#e9e9f0] text-slate-900'
+      }`}
+    >
+      {/* ================= BACKGROUND IMAGE ================= */}
+
+      <div
+        className={`absolute inset-0 bg-cover bg-center transition-all duration-500 ${
+          darkMode ? 'opacity-30' : 'opacity-100'
+        }`}
+        style={{
+          backgroundImage: `url(${BackgroundImage})`,
+        }}
+      />
+
+      {/* Light / Dark Overlay */}
+
+      <div
+        className={`absolute inset-0 transition-all duration-500 ${
+          darkMode
+            ? 'bg-gradient-to-br from-[#07070c]/85 via-[#0b0b14]/80 to-[#170b27]/85'
+            : 'bg-gradient-to-br from-white/20 via-white/10 to-purple-200/20'
+        }`}
+      />
+
+      {/* Purple Glow */}
+
+      <div className="absolute -top-40 left-[30%] w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[140px] pointer-events-none" />
+
+      <div className="absolute -bottom-40 right-[15%] w-[450px] h-[450px] bg-violet-500/20 rounded-full blur-[130px] pointer-events-none" />
+
+      {/* ================= HEADER ================= */}
+
+      <header className="relative z-20 flex items-center justify-between px-6 md:px-10 py-4">
+        {/* Logo */}
+
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-gradient-to-br from-purple-400 to-violet-700 text-white shadow-lg shadow-purple-500/30">
+            <Armchair className="w-5 h-5" />
+          </div>
+
+          <div>
+            <h1
+              className={`text-base md:text-lg font-bold tracking-[0.14em] ${
+                darkMode ? 'text-white' : 'text-slate-800'
+              }`}
+            >
+              URBAN FURNITURE
+            </h1>
+
+            <p
+              className={`text-[10px] md:text-xs tracking-[0.14em] ${
+                darkMode ? 'text-slate-400' : 'text-slate-500'
+              }`}
+            >
+              ACCOUNTING SYSTEM
+            </p>
+          </div>
+        </div>
+
+        {/* Right Side */}
+
+        <div className="flex items-center gap-4">
+          <p
+            className={`hidden md:block text-sm ${
+              darkMode ? 'text-slate-400' : 'text-slate-500'
+            }`}
+          >
+            Furnishing a better tomorrow
+          </p>
+
+          {/* Theme Toggle */}
+
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className={`relative w-[58px] h-[30px] rounded-full p-1 border backdrop-blur-xl transition-all ${
+              darkMode
+                ? 'bg-slate-900/70 border-white/10'
+                : 'bg-white/50 border-white/70'
+            }`}
+          >
+            <div
+              className={`absolute top-[3px] w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${
+                darkMode
+                  ? 'translate-x-[28px] bg-purple-600 text-white'
+                  : 'translate-x-0 bg-white text-purple-600'
+              }`}
+            >
+              {darkMode ? (
+                <Moon className="w-3.5 h-3.5" />
+              ) : (
+                <Sun className="w-3.5 h-3.5" />
+              )}
+            </div>
+          </button>
+        </div>
+      </header>
+
+      {/* ================= MAIN ================= */}
+
+      <main
+        className="
+          relative z-10
+          max-w-[1450px]
+          mx-auto
+          px-6 md:px-10
+          h-[calc(100vh-72px)]
+          grid
+          lg:grid-cols-[0.9fr_1.1fr]
+          gap-10
+          items-center
+        "
+      >
+        {/* ================= LEFT SIDE ================= */}
+
+        <section className="hidden lg:flex flex-col justify-center">
+          <h2
+            className={`text-5xl xl:text-6xl font-bold leading-[1.05] tracking-tight ${
+              darkMode ? 'text-white' : 'text-slate-800'
+            }`}
+          >
+            Furniture
+            <br />
+            Business
+            <br />
+
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-violet-700">
+              Simplified
+            </span>
+          </h2>
+
+          <p
+            className={`mt-5 max-w-md text-base xl:text-lg leading-relaxed ${
+              darkMode ? 'text-black-400' : 'text-black-600'
+            }`}
+          >
+            Manage your sales, purchases, inventory and finances —
+            all in one place.
+          </p>
+
+          {/* FEATURES */}
+
+          <div className="mt-7 space-y-4">
+            <Feature
+              icon={<BarChart3 />}
+              title="Real-time Reports"
+              description="Make informed decisions"
+              darkMode={darkMode}
+            />
+
+            <Feature
+              icon={<Users />}
+              title="Manage Customers & Vendors"
+              description="Build stronger relationships"
+              darkMode={darkMode}
+            />
+
+            <Feature
+              icon={<Package />}
+              title="Track Products & Inventory"
+              description="Stay in control"
+              darkMode={darkMode}
+            />
+          </div>
+
+          {/* Quote */}
+
+          <div
+            className={`mt-8 w-fit px-5 py-4 rounded-2xl backdrop-blur-xl border ${
+              darkMode
+                ? 'bg-white/[0.07] border-white/[0.10]'
+                : 'bg-white/35 border-white/60'
+            }`}
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-[2px] h-9 bg-purple-500 rounded-full" />
+
+              <p
+                className={`text-base ${
+                  darkMode ? 'text-slate-200' : 'text-slate-700'
+                }`}
+              >
+                Quality Furniture.
+                <br />
+                <span className="font-semibold">Smarter Business.</span>
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ================= LOGIN PANEL ================= */}
+
+        <section className="w-full max-w-[620px] mx-auto">
+          <div
+            className={`rounded-[30px] px-7 py-7 md:px-10 md:py-8 backdrop-blur-[35px] border shadow-[0_25px_80px_rgba(0,0,0,0.18)] transition-all duration-500 ${
+              darkMode
+                ? 'bg-[#15151f]/75 border-white/[0.12]'
+                : 'bg-white/35 border-white/70'
+            }`}
+          >
+            {/* LOGIN HEADER */}
+
+            <div className="mb-6">
+              <h2
+                className={`text-3xl font-bold tracking-tight ${
+                  darkMode ? 'text-white' : 'text-slate-800'
+                }`}
+              >
+                Welcome Back
+              </h2>
+
+              <p
+                className={`mt-1 text-base ${
+                  darkMode ? 'text-slate-400' : 'text-slate-500'
+                }`}
+              >
+                Sign in to your Urban Furniture account
+              </p>
+            </div>
+
+            {/* FORM */}
+
+            <form onSubmit={handleSubmit} className="space-y-3">
+              {/* EMAIL */}
+
+              <div className="relative">
+                <Mail
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 ${
+                    darkMode ? 'text-slate-400' : 'text-slate-500'
+                  }`}
+                />
+
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className={`w-full py-3.5 pl-12 pr-4 rounded-xl text-sm outline-none border transition-all ${
+                    darkMode
+                      ? 'bg-black/25 border-white/[0.12] text-white placeholder:text-slate-600'
+                      : 'bg-white/40 border-white/70 text-slate-800 placeholder:text-slate-400'
+                  } focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10`}
+                />
+              </div>
+
+              {/* PASSWORD */}
+
+              <div className="relative">
+                <Lock
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 ${
+                    darkMode ? 'text-slate-400' : 'text-slate-500'
+                  }`}
+                />
+
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className={`w-full py-3.5 pl-12 pr-12 rounded-xl text-sm outline-none border transition-all ${
+                    darkMode
+                      ? 'bg-black/25 border-white/[0.12] text-white placeholder:text-slate-600'
+                      : 'bg-white/40 border-white/70 text-slate-800 placeholder:text-slate-400'
+                  } focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10`}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={`absolute right-4 top-1/2 -translate-y-1/2 ${
+                    darkMode ? 'text-slate-400' : 'text-slate-500'
+                  } hover:text-purple-500`}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+
+              {/* OPTIONS */}
+
+              <div className="flex items-center justify-between py-2 text-sm">
+                <label
+                  className={`flex items-center gap-2 cursor-pointer ${
+                    darkMode ? 'text-slate-300' : 'text-slate-600'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    defaultChecked
+                    className="w-4 h-4 accent-purple-600"
+                  />
+
+                  Remember me
+                </label>
+
+                <button
+                  type="button"
+                  className="text-purple-600 hover:text-purple-700 font-medium"
+                >
+                  Forgot password?
+                </button>
+              </div>
+
+              {/* SIGN IN */}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3.5 rounded-full bg-gradient-to-r from-purple-600 via-violet-600 to-purple-600 text-white text-base font-semibold flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-60"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* DIVIDER */}
+
+            <div className="flex items-center gap-3 my-5">
+              <div
+                className={`flex-1 h-px ${
+                  darkMode ? 'bg-white/10' : 'bg-slate-400/20'
+                }`}
+              />
+
+              <span
+                className={`text-xs ${
+                  darkMode ? 'text-slate-400' : 'text-slate-500'
+                }`}
+              >
+                Or use a demo account
+              </span>
+
+              <div
+                className={`flex-1 h-px ${
+                  darkMode ? 'bg-white/10' : 'bg-slate-400/20'
+                }`}
+              />
+            </div>
+
+            {/* DEMO ACCOUNTS */}
+
+            <div className="grid grid-cols-2 gap-3">
+              <DemoAccount
+                icon={<Crown />}
+                title="Admin Owner"
+                subtitle="admin@urbanfurniture.com"
+                color="purple"
+                darkMode={darkMode}
+                onClick={() =>
+                  fillDemo('admin@urbanfurniture.com', 'admin123')
+                }
+              />
+
+              <DemoAccount
+                icon={<UserRound />}
+                title="Accountant"
+                subtitle="accountant@urbanfurniture.com"
+                color="blue"
+                darkMode={darkMode}
+                onClick={() =>
+                  fillDemo(
+                    'accountant@urbanfurniture.com',
+                    'accountant123'
+                  )
+                }
+              />
+
+              <DemoAccount
+                icon={<Users />}
+                title="Customer"
+                subtitle="Nimesh"
+                color="green"
+                darkMode={darkMode}
+                onClick={() =>
+                  fillDemo('nimesh@customer.com', 'customer123')
+                }
+              />
+
+              <DemoAccount
+                icon={<BriefcaseBusiness />}
+                title="Vendor"
+                subtitle="Azure Furniture"
+                color="orange"
+                darkMode={darkMode}
+                onClick={() =>
+                  fillDemo('azure@vendor.com', 'vendor123')
+                }
+              />
+            </div>
+
+            {/* FOOTER */}
+
+            <p
+              className={`text-center mt-5 text-xs ${
+                darkMode ? 'text-slate-500' : 'text-slate-500'
+              }`}
+            >
+              Need help? Contact your administrator.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+
+/* =========================================================
+   FEATURE COMPONENT
+========================================================= */
+
+function Feature({ icon, title, description, darkMode }) {
+  return (
+    <div className="flex items-center gap-4">
+      <div
+        className={`w-11 h-11 rounded-xl flex items-center justify-center text-purple-600 backdrop-blur-xl border ${
+          darkMode
+            ? 'bg-white/[0.07] border-white/[0.10]'
+            : 'bg-white/35 border-white/70'
+        }`}
+      >
+        {React.cloneElement(icon, {
+          className: 'w-5 h-5',
+        })}
+      </div>
+
+      <div>
+        <h3
+          className={`text-base font-semibold ${
+            darkMode ? 'text-white' : 'text-slate-800'
+          }`}
+        >
+          {title}
+        </h3>
+
+        <p
+          className={`text-sm ${
+            darkMode ? 'text-slate-400' : 'text-slate-500'
+          }`}
+        >
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+
+/* =========================================================
+   DEMO ACCOUNT COMPONENT
+========================================================= */
+
+function DemoAccount({
+  icon,
+  title,
+  subtitle,
+  color,
+  darkMode,
+  onClick,
+}) {
+  const colors = {
+    purple: 'text-purple-600 bg-purple-500/10',
+    blue: 'text-blue-600 bg-blue-500/10',
+    green: 'text-emerald-600 bg-emerald-500/10',
+    orange: 'text-orange-600 bg-orange-500/10',
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex items-center gap-3 p-3 rounded-xl text-left border transition-all hover:-translate-y-[2px] ${
+        darkMode
+          ? 'bg-white/[0.05] border-white/[0.10] hover:bg-white/[0.09]'
+          : 'bg-white/25 border-white/60 hover:bg-white/50'
+      }`}
+    >
+      <div
+        className={`w-9 h-9 rounded-xl flex items-center justify-center ${colors[color]}`}
+      >
+        {React.cloneElement(icon, {
+          className: 'w-4 h-4',
+        })}
+      </div>
+
+      <div className="min-w-0">
+        <p
+          className={`text-sm font-semibold ${
+            darkMode ? 'text-white' : 'text-slate-800'
+          }`}
+        >
+          {title}
+        </p>
+
+        <p
+          className={`text-[11px] truncate ${
+            darkMode ? 'text-slate-500' : 'text-slate-500'
+          }`}
+        >
+          {subtitle}
+        </p>
+      </div>
+    </button>
+  );
+}
