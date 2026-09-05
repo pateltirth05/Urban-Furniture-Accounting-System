@@ -2,6 +2,7 @@ import express from "express"
 import authRoutes from "./routes/authRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import productCategoryRoutes from "./routes/productCategoryRoutes.js";
+import journalEntryRoutes from "./routes/journalEntryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import chartOfAccountRoutes from "./routes/chartOfAccountRoutes.js";
 import journalRoutes from "./routes/journalRoutes.js"
@@ -14,6 +15,7 @@ app.use("/api/product-categories", productCategoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/accounts", chartOfAccountRoutes);
 app.use("/api/journals", journalRoutes);
+app.use("/api/journal-entries", journalEntryRoutes);
 app.get("/health",(req,res)=>{
     res.json({
         message:"Urban Furniture Accounting API health test"
