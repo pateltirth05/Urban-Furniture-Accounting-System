@@ -13,6 +13,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import analyticAccountRoutes from "./routes/analyticAccountRoutes.js";
 import salesOrderRoutes from "./routes/salesOrderRoutes.js";
 import customerInvoiceRoutes from "./routes/customerInvoiceRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 const app=express();
 
 app.use(express.json())
@@ -30,6 +31,7 @@ app.use("/api/analytic-accounts", analyticAccountRoutes);
 app.use("/api/sales-orders", salesOrderRoutes);
 app.use("/api/customer-invoices", customerInvoiceRoutes);
 app.use("/api/budgets", budgetRoutes);
+app.use("/api/reports", reportRoutes);
 app.get("/health",(req,res)=>{
     res.json({
         message:"Urban Furniture Accounting API health test"
