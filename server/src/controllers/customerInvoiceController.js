@@ -507,114 +507,51 @@ export const updateCustomerInvoice = async (req, res) => {
     let taxAmount = 0;
     const processedLines = [];
 
-    for (const line of lines) {
-      const {
-        productId,
-        accountId,
-        analyticAccountId,
-        quantity,
-        unitPrice,
-        taxRate = 0,
-      } = line;
+   // ---------------------------------------------
+// UPDATE STOCK
+// ---------------------------------------------
+for (const line of linesResult.rows) {
+  const productResult = await client.query(
+    `
+      SELECT product_type
+      FROM products
+      WHERE id = $1
+    `,
+    [line.product_id]
+  );
 
-      const qty = Number(quantity);
-      const price = Number(unitPrice);
-      const tax = Number(taxRate);
-
-      if (!productId) {
-        throw new Error("Product is required for every invoice line");
-      }
-
-      if (!qty || qty <= 0) {
-        throw new Error("Quantity must be greater than 0");
-      }
-
-      if (price < 0 || Number.isNaN(price)) {
-        throw new Error("Unit price must be 0 or greater");
-      }
-
-      if (tax < 0 || tax > 100 || Number.isNaN(tax)) {
-        throw new Error("Tax rate must be between 0 and 100");
-      }
-
-      const productResult = await client.query(
-        `
-          SELECT id
-          FROM products
-          WHERE id = $1
-            AND is_active = true
-        `,
-        [productId]
-      );
-
-      if (productResult.rows.length === 0) {
-        throw new Error(`Product ${productId} not found`);
-      }
-
-      if (accountId) {
-        const accountResult = await client.query(
-          `
-            SELECT id, account_type
-            FROM chart_of_accounts
-            WHERE id = $1
-              AND is_active = true
-          `,
-          [accountId]
-        );
-
-        if (accountResult.rows.length === 0) {
-          throw new Error(`Account ${accountId} not found`);
-        }
-
-        if (accountResult.rows[0].account_type !== "INCOME") {
-          throw new Error(
-            "Invoice account must be an INCOME account"
-          );
-        }
-      }
-
-      if (analyticAccountId) {
-        const analyticResult = await client.query(
-          `
-            SELECT id, type
-            FROM analytic_accounts
-            WHERE id = $1
-              AND is_active = true
-          `,
-          [analyticAccountId]
-        );
-
-        if (analyticResult.rows.length === 0) {
-          throw new Error(
-            `Analytic account ${analyticAccountId} not found`
-          );
-        }
-
-        if (analyticResult.rows[0].type !== "INCOME") {
-          throw new Error(
-            "Invoice analytic account must be an INCOME account"
-          );
-        }
-      }
-
-      const lineSubtotal = qty * price;
-      const lineTax = lineSubtotal * (tax / 100);
-      const lineTotal = lineSubtotal + lineTax;
-
-      subtotal += lineSubtotal;
-      taxAmount += lineTax;
-
-      processedLines.push({
-        productId,
-        accountId: accountId || null,
-        analyticAccountId: analyticAccountId || null,
-        quantity: qty,
-        unitPrice: price,
-        taxRate: tax,
-        taxAmount: lineTax,
-        lineTotal,
-      });
-    }
+  if (
+    productResult.rows.length > 0 &&
+    productResult.rows[0].product_type === "GOODS"
+  ) {
+    await client.query(
+      `
+        INSERT INTO stock_movements (
+          product_id,
+          movement_type,
+          quantity,
+          reference_type,
+          reference_id,
+          movement_date
+        )
+        VALUES (
+          $1,
+          'OUT',
+          $2,
+          'CUSTOMER_INVOICE',
+          $3,
+          $4
+        )
+      `,
+      [
+        line.product_id,
+        line.quantity,
+        id,
+        invoice.invoice_date,
+      ]
+    );
+  }
+}
 
     const totalAmount = subtotal + taxAmount;
 

@@ -520,111 +520,51 @@ export const updateVendorBill = async (req, res, next) => {
     let taxAmount = 0;
     let totalAmount = 0;
 
-    for (const line of lines) {
-      const quantity = Number(line.quantity);
-      const unitPrice = Number(line.unitPrice);
-      const tax = Number(line.taxAmount || 0);
+    // ---------------------------------------------
+// UPDATE STOCK
+// ---------------------------------------------
+for (const line of linesResult.rows) {
+  const productResult = await client.query(
+    `
+      SELECT product_type
+      FROM products
+      WHERE id = $1
+    `,
+    [line.product_id]
+  );
 
-      if (!line.productId) {
-        await client.query("ROLLBACK");
-
-        return res.status(400).json({
-          success: false,
-          message: "Product is required for every bill line",
-        });
-      }
-
-      if (!Number.isFinite(quantity) || quantity <= 0) {
-        await client.query("ROLLBACK");
-
-        return res.status(400).json({
-          success: false,
-          message: "Quantity must be greater than zero",
-        });
-      }
-
-      if (!Number.isFinite(unitPrice) || unitPrice < 0) {
-        await client.query("ROLLBACK");
-
-        return res.status(400).json({
-          success: false,
-          message: "Unit price cannot be negative",
-        });
-      }
-
-      if (!Number.isFinite(tax) || tax < 0) {
-        await client.query("ROLLBACK");
-
-        return res.status(400).json({
-          success: false,
-          message: "Tax amount cannot be negative",
-        });
-      }
-
-      const productResult = await client.query(
-        `SELECT id
-         FROM products
-         WHERE id = $1
-         AND is_active = TRUE`,
-        [line.productId]
-      );
-
-      if (productResult.rows.length === 0) {
-        await client.query("ROLLBACK");
-
-        return res.status(400).json({
-          success: false,
-          message: `Product ${line.productId} not found`,
-        });
-      }
-
-      if (line.accountId) {
-        const accountResult = await client.query(
-          `SELECT id
-           FROM chart_of_accounts
-           WHERE id = $1
-           AND account_type = 'EXPENSE'
-           AND is_active = TRUE`,
-          [line.accountId]
-        );
-
-        if (accountResult.rows.length === 0) {
-          await client.query("ROLLBACK");
-
-          return res.status(400).json({
-            success: false,
-            message: `Expense account ${line.accountId} not found`,
-          });
-        }
-      }
-
-      if (line.analyticAccountId) {
-        const analyticResult = await client.query(
-          `SELECT id
-           FROM analytic_accounts
-           WHERE id = $1
-           AND type = 'EXPENSE'
-           AND is_active = TRUE`,
-          [line.analyticAccountId]
-        );
-
-        if (analyticResult.rows.length === 0) {
-          await client.query("ROLLBACK");
-
-          return res.status(400).json({
-            success: false,
-            message: `Expense analytic account ${line.analyticAccountId} not found`,
-          });
-        }
-      }
-
-      const lineSubtotal = quantity * unitPrice;
-      const lineTotal = lineSubtotal + tax;
-
-      subtotal += lineSubtotal;
-      taxAmount += tax;
-      totalAmount += lineTotal;
-    }
+  if (
+    productResult.rows.length > 0 &&
+    productResult.rows[0].product_type === "GOODS"
+  ) {
+    await client.query(
+      `
+        INSERT INTO stock_movements (
+          product_id,
+          movement_type,
+          quantity,
+          reference_type,
+          reference_id,
+          movement_date
+        )
+        VALUES (
+          $1,
+          'IN',
+          $2,
+          'VENDOR_BILL',
+          $3,
+          $4
+        )
+      `,
+      [
+        line.product_id,
+        line.quantity,
+        id,
+        invoice.bill_date,
+      ]
+    );
+  }
+}
 
     const updateResult = await client.query(
       `UPDATE vendor_bills
