@@ -118,8 +118,16 @@ export const API = {
   getStockMovements: (params) => api.get("/stock/movements", { params }),
 
   // Exports
-  exportCsvUrl: (entity) => `/api/export/csv/${entity}`,
-  exportInvoicePdfUrl: (id) => `/api/export/invoices/${id}/pdf`,
+  // Exports
+exportCsvUrl: (entity) => `/api/export/csv/${entity}`,
+
+exportInvoicePdfUrl: (id) =>
+  `/api/export/invoices/${id}/pdf`,
+
+downloadInvoicePdf: (id) =>
+  api.get(`/export/invoices/${id}/pdf`, {
+    responseType: "blob",
+  }),
 };
 
 export default api;

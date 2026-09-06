@@ -53,7 +53,29 @@ export default function CustomerInvoices() {
       alert(err.response?.data?.message || "Failed to cancel invoice");
     }
   };
+const handlePrintPdf = async (id) => {
+  try {
+    const response = await API.downloadInvoicePdf(id);
 
+    const blob = new Blob([response.data], {
+      type: "application/pdf",
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    window.open(url, "_blank");
+
+    setTimeout(() => {
+      window.URL.revokeObjectURL(url);
+    }, 60000);
+  } catch (err) {
+    console.error("Invoice PDF error:", err);
+    alert(
+      err.response?.data?.message ||
+      "Failed to generate invoice PDF"
+    );
+  }
+};
   return (
     <div className="pageWorkspace">
       <div className="pageCard">
@@ -147,15 +169,14 @@ export default function CustomerInvoices() {
                           </Link>
                         )}
 
-                        <a
-                          href={API.exportInvoicePdfUrl(inv.id)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="btnSecondary"
-                          style={{ padding: "4px 8px", fontSize: 12 }}
-                        >
-                          Print PDF
-                        </a>
+                        <button
+  type="button"
+  onClick={() => handlePrintPdf(inv.id)}
+  className="btnSecondary"
+  style={{ padding: "4px 8px", fontSize: 12 }}
+>
+  Print PDF
+</button>
                       </div>
                     </td>
                   </tr>
